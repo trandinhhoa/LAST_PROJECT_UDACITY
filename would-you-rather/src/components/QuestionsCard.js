@@ -12,67 +12,37 @@ import FormLabel  from '@material-ui/core/FormLabel'
 import RadioGroup  from '@material-ui/core/RadioGroup'
 import FormControlLabel  from '@material-ui/core/FormControlLabel'
 import Radio  from '@material-ui/core/Radio'
-import {handleSaveQuestionAnswer} from '../actions/questions'
+import {saveQuestionAnswer} from '../actions/questions'
 import Questions from './Questions'
 import Error from './Error'
-
-const styles ={
-    root: {
-        minWidth: 275,
-        marginBottom: 5,
-        marginTop: 5,
-    },
-    avatar:{
-        display: 'flex'
-    },
-    question: {
-        fontSize: 14,
-        color: "black"
-    },
-    questionStats: {
-        fontSize: 14
-    },
-    title: {
-        marginLeft: 15,
-        paddingTop: 3
-    },
-    submitBtn: {
-        float: "right"
-    },
-    viewPollBtn: {
-        paddingTop: 0
-    },
-    viewQuestion: {
-        marginTop: 16
-    }
-}
+import '../css/QuestionsCard.css'
 
 class QuestionsCard extends Component{
     state = {
-        selectedAnswer: '',
-        toStats: false
+        sltAnswer: '',
+        isStats: false
     }
 
-    toParent = (e, id) => {
+    processRadioChange = (value) => {
+        this.setState(() => ({
+            sltAnswer: value
+        }))
+    }
+
+    actionToParent = (e, id) => {
         e.preventDefault();
         this.props.history.push(`questions/${id}`);
     }
 
-    submitPoll = () =>{
-        this.props.dispatch(handleSaveQuestionAnswer(this.state.selectedAnswer, this.props.questionId));
+    actionSubmitPoll = () =>{
+        this.props.dispatch(saveQuestionAnswer(this.state.sltAnswer, this.props.questionId));
         this.setState(() => ({
-            toStats: true,
-        }))
-    }
-
-    handleRadioChange = (value) => {
-        this.setState(() => ({
-            selectedAnswer: value
+            isStats: true,
         }))
     }
     
     render(){
-        const {questions, questionId, users, viewPoll, toStats, authedUser} = this.props;
+        const {questions, questionId, users, viewPoll, isStats, authedUser} = this.props;
         let question = null;
 
         if(questions[questionId] === undefined){
@@ -81,33 +51,33 @@ class QuestionsCard extends Component{
             question = questions[questionId];
         }
 
-        if(this.state.toStats === true){
+        if(this.state.isStats === true){
             return (
-                <Questions questionId={questionId} viewPoll={true} toStats={true}/>
+                <Questions questionId={questionId} viewPoll={true} isStats={true}/>
             )
         }
 
         return(
             <Fragment>
                 {
-                    viewPoll && !toStats && (
-                        <Card style={styles.root} variant="outlined">
+                    viewPoll && !isStats && (
+                        <Card className='Main' variant="outlined">
                             <CardContent>
-                                <div style={styles.avatar}>
+                                <div className='Avatar'>
                                     <Avatar alt={users[question.author].name} src={users[question.author].avatarURL} />
-                                    <Typography style={styles.title} variant="h5" component="h2">     
+                                    <Typography className='TitleTypo' variant="h5" component="h2">     
                                         {users[question.author].name} asks:
                                     </Typography>
                                 </div>
                                 <div>
-                                    <form onSubmit={(e) => this.submitPoll(e)}>
+                                    <form onSubmit={(e) => this.actionSubmitPoll(e)}>
                                         <FormControl component="fieldset">
                                             <FormLabel component="legend">Would you rather...</FormLabel>
-                                            <RadioGroup aria-label="question" name="question" value={this.state.selectedAnswer} onChange={(e) => this.handleRadioChange(e.target.value)}>
+                                            <RadioGroup aria-label="question" name="question" value={this.state.sltAnswer} onChange={(e) => this.processRadioChange(e.target.value)}>
                                                 <FormControlLabel value={"optionOne"} control={<Radio />} label={question.optionOne.text} />
                                                 <FormControlLabel value={"optionTwo"} control={<Radio />} label={question.optionTwo.text} />
                                             </RadioGroup>
-                                                <Button type="submit" variant="contained" color="primary">Submit</Button>
+                                                <Button type="submit" variant="contained">Submit</Button>
                                         </FormControl>
                                     </form>
                                 </div>
@@ -116,12 +86,12 @@ class QuestionsCard extends Component{
                     )
                 }
                 {
-                    viewPoll && toStats && (
-                        <Card style={styles.root} variant="outlined">
+                    viewPoll && isStats && (
+                        <Card className='Main' variant="outlined">
                             <CardContent>
-                                <div style={styles.avatar}>
+                                <div className='Avatar'>
                                     <Avatar alt={users[question.author].name} src={users[question.author].avatarURL} />
-                                    <Typography style={styles.title} variant="h5" component="h2">     
+                                    <Typography className='TitleTypo' variant="h5" component="h2">     
                                         {users[question.author].name} asks:
                                     </Typography>
                                 </div>
@@ -132,21 +102,21 @@ class QuestionsCard extends Component{
                                             You selected <b>{question[users[authedUser].answers[questionId]].text}</b>
                                         </Typography>
                                     }
-                                    <Typography style={styles.question} color="textSecondary" gutterBottom>
+                                    <Typography className='QuesTypo' color="textSecondary" gutterBottom>
                                         {question.optionOne.text}
                                     </Typography>
-                                    <Typography style={styles.questionStats} color="textSecondary" gutterBottom>
+                                    <Typography className='QuesStatsTypo' color="textSecondary" gutterBottom>
                                         Votes: {question.optionOne.votes.length}
                                         <br />
                                         Percentage: {((question.optionOne.votes.length/(question.optionOne.votes.length+question.optionTwo.votes.length))*100).toFixed()}%
                                     </Typography>
-                                    <Typography color="textSecondary" gutterBottom>
+                                    <Typography gutterBottom>
                                         OR
                                     </Typography>
-                                    <Typography style={styles.question} color="textSecondary" gutterBottom>
+                                    <Typography className='QuesTypo' color="textSecondary" gutterBottom>
                                         {question.optionTwo.text}
                                     </Typography>
-                                    <Typography style={styles.questionStats} color="textSecondary" gutterBottom>
+                                    <Typography className='QuesStatsTypo' color="textSecondary" gutterBottom>
                                         Votes: {question.optionTwo.votes.length}
                                         <br />
                                         Percentage: {((question.optionTwo.votes.length/(question.optionOne.votes.length+question.optionTwo.votes.length))*100).toFixed()}%
@@ -158,28 +128,28 @@ class QuestionsCard extends Component{
                 }
                 {
                     !viewPoll && (
-                        <Card style={styles.root} variant="outlined">
+                        <Card className='Main' variant="outlined">
                             <CardContent>
-                                <div style={styles.avatar}>
+                                <div className='Avatar'>
                                     <Avatar alt={users[question.author].name} src={users[question.author].avatarURL} />
-                                    <Typography style={styles.title} variant="h5" component="h2">
+                                    <Typography className='TitleTypo' variant="h5" component="h2">
                                         {users[question.author].name} asks:
                                     </Typography>
                                 </div>
-                                <div style={styles.viewQuestion}>
-                                    <Typography style={styles.question} color="textSecondary" gutterBottom>
+                                <div className='ViewQuestion'>
+                                    <Typography className='QuesTypo' color="textSecondary" gutterBottom>
                                         {question.optionOne.text}
                                     </Typography>
-                                    <Typography color="textSecondary" gutterBottom>
+                                    <Typography gutterBottom>
                                         OR
                                     </Typography>
-                                    <Typography style={styles.question} color="textSecondary" gutterBottom>
+                                    <Typography className='QuesTypo' color="textSecondary" gutterBottom>
                                         {question.optionTwo.text}
                                     </Typography>
                                 </div>
                             </CardContent>
-                            <CardActions  style={styles.viewPollBtn}>
-                                <Button variant="contained" size="small" onClick={(e) => this.toParent(e, questionId)}>View Poll</Button>
+                            <CardActions className='BtnAction'>
+                                <Button variant="contained" size="small" onClick={(e) => this.actionToParent(e, questionId)}>View Poll</Button>
                             </CardActions>
                         </Card>
                     )
@@ -189,13 +159,13 @@ class QuestionsCard extends Component{
     }
 }
 
-function mapStateToProps({questions, users, authedUser}, {questionId, viewPoll, toStats} ){   
+function mapStateToProps({questions, users, authedUser}, {questionId, viewPoll, isStats} ){   
     return{
         questions,
         users,
         questionId,
         viewPoll,
-        toStats,
+        isStats,
         authedUser
     }
 }

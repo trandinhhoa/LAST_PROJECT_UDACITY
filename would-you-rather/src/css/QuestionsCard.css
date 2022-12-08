@@ -1,0 +1,30 @@
+.Main {
+    min-width: 300px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.Main .Avatar {
+    display: flex
+}
+
+.TitleTypo {
+    margin-left: 15px;
+    padding-top: 3px
+}
+
+.QuesTypo{
+    font-size: 14px;
+}
+
+.QuesStatsTypo{
+    font-size: 14px;
+}
+
+.ViewQuestion{
+    margin-top: 15px
+}
+
+.BtnAction{
+    padding-top: 0
+}

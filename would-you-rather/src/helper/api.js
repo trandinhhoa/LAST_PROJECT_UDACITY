@@ -5,7 +5,7 @@ import {
     _saveQuestionAnswer
 } from './_DATA.js'
 
-export async function getInitialData(){
+export async function getInitDataUserAndQuestion(){
     try {
         const [users, questions] = await Promise.all([
             _getUsers(),
@@ -20,17 +20,17 @@ export async function getInitialData(){
     }
 }
 
-export async function getUsers(){
+export async function getUsersApi(){
     const [users] = await Promise.all([
         _getUsers(),
     ])
     return ({ users })
 }
 
-export function saveQuestion(info){
+export function saveQuestionApi(info){
     return _saveQuestion(info)
 }
 
-export function saveQuestionAnswer(info){
+export function saveQuestionAnswerApi(info){
     return _saveQuestionAnswer(info)
 }

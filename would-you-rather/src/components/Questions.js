@@ -6,9 +6,21 @@ import Tab from '@material-ui/core/Tab'
 import Container from '@material-ui/core/Container'
 import QuestionsCard from './QuestionsCard'
 
+function tabProps(index) {
+    return {
+        id: `simple-tab-${index}`,
+        'aria-controls': `simple-tabpanel-${index}`,
+    };
+}
+
+function calculateDateTime(datetime1, datetime2){
+    var date1 = new Date(datetime1);
+    var date2 = new Date(datetime2);
+    return date2 - date1;
+}
 
 function TabPanel(props) {
-    const { children, value, index, questions, unansweredQuestions, answeredQuestions, ...other } = props;
+    const { children, value, index, questions, unansQuestions, ansQuestions, ...other } = props;
   
     return (
       <div
@@ -19,12 +31,12 @@ function TabPanel(props) {
         {...other}
       >
         {
-            value === 0 && unansweredQuestions.map((key) => (
+            value === 0 && unansQuestions.map((key) => (
                 <QuestionsCard key={key} questionId={key} toStats={false} viewPoll={false}/>
             ))
         }
         {
-            value === 1 && answeredQuestions.map((key) => (
+            value === 1 && ansQuestions.map((key) => (
                 <QuestionsCard key={key} questionId={key} toStats={true} viewPoll={true}/>
             ))
         }
@@ -32,33 +44,27 @@ function TabPanel(props) {
     );
 }
 
-function addProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
-
 class Questions extends Component{
     state={
         value: 0,
     }
-    handleChange = (e) =>{
-        let newValue = e.target.value;
+
+    tabChange = (e) =>{
+        let valueNew = e.target.value;
         if(this.state.value === 0){
-            newValue = 1;
+            valueNew = 1;
         }else{
-            newValue = 0;
+            valueNew = 0;
         }
 
         this.setState(()=>({
-            value: newValue
+            value: valueNew
         }))
     }
 
     render(){
         const {value} = this.state;
-        const{questions, unansweredQuestions, answeredQuestions, viewPoll, toStats, questionId} = this.props;
+        const{questions, unansQuestions, ansQuestions, viewPoll, isStats, questionId} = this.props;
         let qid = questionId;
         if(questionId === undefined && this.props.match !== undefined){
             qid = this.props.match.params.id;
@@ -69,15 +75,15 @@ class Questions extends Component{
                     viewPoll === false && (
                         <Fragment>
                         <AppBar position="static">
-                            <Tabs value={value} onChange={(e) => this.handleChange(e)} aria-label="Toggle between answered and unanswered questions">
-                                <Tab label="Unanswered Questions"  {...addProps(0)}  />
-                                <Tab label="Answered Questions"  {...addProps(1)}  />
+                            <Tabs value={value} onChange={(e) => this.tabChange(e)} aria-label="Toggle between answered and unanswered questions">
+                                <Tab label="Unanswered Questions"  {...tabProps(0)}  />
+                                <Tab label="Answered Questions"  {...tabProps(1)}  />
                             </Tabs>
                         </AppBar>
-                        <TabPanel value={value} index={0} questions={questions} unansweredQuestions={unansweredQuestions} answeredQuestions={answeredQuestions}>
+                        <TabPanel value={value} index={0} questions={questions} unansQuestions={unansQuestions} ansQuestions={ansQuestions}>
                             Unanswered Questions
                         </TabPanel>
-                        <TabPanel value={value} index={1} questions={questions} unansweredQuestions={unansweredQuestions} answeredQuestions={answeredQuestions}>
+                        <TabPanel value={value} index={1} questions={questions} unansQuestions={unansQuestions} ansQuestions={ansQuestions}>
                             Answered Questions
                         </TabPanel>
                         </Fragment>
@@ -85,7 +91,7 @@ class Questions extends Component{
                 }
                 {
                     viewPoll && ( 
-                        <QuestionsCard key={qid} questionId={qid} viewPoll={viewPoll} toStats={toStats}/>
+                        <QuestionsCard key={qid} questionId={qid} viewPoll={viewPoll} isStats={isStats}/>
                     )
                 }
             </Container>
@@ -93,16 +99,10 @@ class Questions extends Component{
     }
 }
 
-function sortDatetime(datetime1, datetime2){
-    var date1 = new Date(datetime1);
-    var date2 = new Date(datetime2);
-    return date2 - date1;
-}
-
 function mapStateToProps({questions, authedUser, users}, props){
-    let answeredQuestions, unansweredQuestions = [];
-    answeredQuestions = Object.keys(users[authedUser].answers).sort((a,b) => sortDatetime(questions[a].timestamp, questions[b].timestamp));
-    unansweredQuestions = Object.keys(questions).filter(key => !answeredQuestions.includes(questions[key].id)).sort((a,b) => sortDatetime(questions[a].timestamp, questions[b].timestamp));
+    let ansQuestions, unansQuestions = [];
+    ansQuestions = Object.keys(users[authedUser].answers).sort((a,b) => calculateDateTime(questions[a].timestamp, questions[b].timestamp));
+    unansQuestions = Object.keys(questions).filter(key => !ansQuestions.includes(questions[key].id)).sort((a,b) => calculateDateTime(questions[a].timestamp, questions[b].timestamp));
     let viewPoll = false;
     if(props.viewPoll !== undefined){
         viewPoll = props.viewPoll;
@@ -111,8 +111,8 @@ function mapStateToProps({questions, authedUser, users}, props){
     }
     return{
         questions,
-        answeredQuestions,
-        unansweredQuestions,
+        ansQuestions,
+        unansQuestions,
         authedUser,
         viewPoll
     };

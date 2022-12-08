@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react';
 import {connect} from 'react-redux'
 import {BrowserRouter as Router, Route} from 'react-router-dom'
 import LoadingBar from 'react-redux-loading'
-import {handleInitialData} from '../actions/shared'
+import {getDataUserAndQuestion} from '../actions/users'
 import SignIn from './SignIn';
 import Nav from './Nav';
 import LeaderBoard from './LeaderBoard';
@@ -11,11 +11,12 @@ import NewQuestionsCard from './NewQuestionsCard'
 
 class App extends Component {
 	componentDidMount(){
-		this.props.dispatch(handleInitialData())
+		this.props.dispatch(getDataUserAndQuestion())
 	}
 
 	render(){
-		const {authedUser,loading} = this.props;
+		console.log(this.props);
+		const {authedUser, loading} = this.props;
 
 		return (
 			<Router>

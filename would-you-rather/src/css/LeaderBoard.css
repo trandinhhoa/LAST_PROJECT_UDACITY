@@ -1,0 +1,17 @@
+.CardLeaderBoard{
+    display: flex;
+    margin-bottom: 20px,
+}
+
+.CardMediaLeaderBoard{
+    width: 160px
+}
+
+.CardContentLeaderBoard{
+    flex: 1 0 auto,
+}
+
+.DetailLeaderBoard{
+    display: flex;
+    flex-direction: column,
+}

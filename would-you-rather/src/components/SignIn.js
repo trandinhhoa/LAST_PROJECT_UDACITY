@@ -11,63 +11,45 @@ import CardContent from '@material-ui/core/CardContent'
 import CardActions from '@material-ui/core/CardActions'
 import {setAuthedUser} from '../actions/authedUser'
 import logo from '../logo.svg';
-
-const styles = {
-    card: {
-        marginTop: 20
-    },
-    cardContent: {
-        paddingBottom: 0
-    },
-    form: {
-        display: "flex"
-    },
-    cardActions: {
-        alignSelf: "flex-end",
-        paddingRight: 0
-    },
-    header: {
-        marginTop: 0
-    }
-}
+import '../css/SignIn.css'
 
 class SignIn extends Component{
     state = {
-        selectedUser: ""
+        sltUser: ""
     }
 
-    setSelectValue(value){
-        this.setState(() => ({
-            selectedUser: value
-        }))
-    }
-
-    handleSetAuthedUser = (e) =>{
+    submitSetAuthedUser = (e) =>{
         e.preventDefault();
-        if(this.state.selectedUser !== ""){
-            this.props.dispatch(setAuthedUser(this.state.selectedUser));
+        if(this.state.sltUser !== ""){
+            this.props.dispatch(setAuthedUser(this.state.sltUser));
         }
+    }
+
+    changeSelectValue(value){
+        this.setState(() => ({
+            sltUser: value
+        }))
     }
 
     render(){
         const {users} = this.props;
-        const {selectedUser} = this.state;
+        const {sltUser} = this.state;
         return(
-            <Container maxWidth="xs">
-                <Card style={styles.card}>
-                    <CardContent style={styles.cardContent}>
+            <Container maxWidth="sm">
+                <Card className='CardSignIn'>
+                    <CardContent className='CardContentSignIn'>
                         <span>
-                            <h2 style={styles.header}>Welcome to Would You Rather!</h2>
-                            <img src={logo} alt="Logo" />;
-                            <p>Please select a user to sign in with.</p>
+                            <h2>Welcome to Would You Ratherz App!</h2>
+                            <img src={logo} alt="Logo" />
+                            <p>Select user to continue.</p>
                         </span>
-                        <FormControl style={styles.form}>
+                        <FormControl className='CardFormSignIn'>
                             <InputLabel id="signin-select-label">User</InputLabel>
                             <Select
                                 labelId="signin-select-label"
                                 id="signin-select"
-                                value={selectedUser}
-                                onChange={e => this.setSelectValue(e.target.value)}
+                                value={sltUser}
+                                onChange={e => this.changeSelectValue(e.target.value)}
                             >
                                 {
                                     users !== null && Object.keys(users).map((key, index) => (
@@ -75,8 +57,8 @@ class SignIn extends Component{
                                     ))
                                 }
                             </Select>
-                            <CardActions style={styles.cardActions}>
-                                <Button variant="contained" color="primary" onClick={this.handleSetAuthedUser}>Submit</Button>
+                            <CardActions className='CardActionSignIn'>
+                                <Button variant="contained" onClick={this.submitSetAuthedUser}>Submit</Button>
                             </CardActions>
                         </FormControl>
                     </CardContent>

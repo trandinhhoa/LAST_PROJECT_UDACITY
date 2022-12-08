@@ -1,0 +1,19 @@
+
+.MainSignOut {
+    float: right;
+    display: flex
+}
+
+.NameUserSignOut {
+    margin-right: 10px
+}
+
+.AvatarSignOut {
+    align-self: "center"; 
+    margin-top: 10px;
+}
+
+.MainSignOut .BtnSignOut{
+    margin: 10px;
+    background-color: red;
+}

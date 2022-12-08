@@ -1,0 +1,17 @@
+.CardSignIn {
+    margin-top: 20px;
+}
+
+.CardContentSignIn {
+    padding-bottom: 0px;
+    text-align: center
+}
+
+.CardContentSignIn .CardFormSignIn{
+    display: flex
+}
+
+.CardActionSignIn{
+    align-self: flex-end;
+    padding-right: 0
+}

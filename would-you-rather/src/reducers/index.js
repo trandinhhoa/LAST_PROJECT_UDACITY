@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux'
 import {loadingBarReducer} from 'react-redux-loading'
-import authedUser from './authedUser'
-import questions from './questions'
-import users from './users'
+import {authedUser} from '../actions/authedUser'
+import {questions} from '../actions/questions'
+import {users} from '../actions/users'
 
 export default combineReducers({
     authedUser,

@@ -9,75 +9,50 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import Container from '@material-ui/core/Container'
 import Input from '@material-ui/core/Input'
-import {handleAddQuestion} from '../actions/questions'
-
-const styles = {
-    root: {
-        minWidth: 275,
-        marginBottom: 20,
-    },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
-    },
-    title: {
-        fontSize: 14,
-    },
-    pos: {
-        marginBottom: 12,
-    },
-    inputs: {
-       // width: "-webkit-fill-available"
-    },
-    submitBtn: {
-        marginTop: 10,
-        marginBottom: 10,
-        float: "right"
-    }
-}
+import {processAddQuestion} from '../actions/questions'
+import '../css/NewQuestionCard.css'
 
 class NewQuestionsCard extends Component{
     state = {
-        optionOne: '',
-        optionTwo: '',
-        toHome: false
+        valueOptionOne: '',
+        valueOptionTwo: '',
+        isHome: false
     }
 
-    handleChange = (event) => {
-        const value = event.target.value;
-        if(event.target.id === 'option-one'){
-            this.setState(() => ({
-                optionOne: value
-            }))
-        }else{
-            this.setState(() => ({
-                optionTwo: value
-            }))
-        }
-    }
-
-    handleSubmit = (event) =>{
+    processSubmit = (event) =>{
         event.preventDefault();
 
-        const {optionOne, optionTwo} = this.state;
+        const {valueOptionOne, valueOptionTwo} = this.state;
         const {dispatch, id} = this.props;
 
-        if(optionOne.trim() !== "" && optionTwo.trim() !== ""){
-            dispatch(handleAddQuestion(optionOne, optionTwo));
+        if(valueOptionOne.trim() !== "" && valueOptionTwo.trim() !== ""){
+            dispatch(processAddQuestion(valueOptionOne, valueOptionTwo));
 
             this.setState(() => ({
-                optionOne: '',
-                optionTwo: '',
-                toHome: id ? false : true,
+                valueOptionOne: '',
+                valueOptionTwo: '',
+                isHome: id ? false : true,
             }));
         }
     }
 
-    render(){
-        const {optionOne, optionTwo, toHome} = this.state;
+    processInputChange = (event) => {
+        const value = event.target.value;
+        if(event.target.id === 'option-one'){
+            this.setState(() => ({
+                valueOptionOne: value
+            }))
+        }else{
+            this.setState(() => ({
+                valueOptionTwo: value
+            }))
+        }
+    }
 
-        if(toHome === true){
+    render(){
+        const {valueOptionOne, valueOptionTwo, isHome} = this.state;
+
+        if(isHome === true){
             return (
                 <Redirect to="/" />
             )
@@ -85,26 +60,28 @@ class NewQuestionsCard extends Component{
 
 
         return(
-            <Container maxWidth="xs">
-                <Card style={styles.root} variant="outlined">
+            <Container maxWidth='xs'>
+                <Card className='Main' variant="outlined">
                     <CardContent>
                         <Typography variant="h5" component="h2">
                             Create a new question
                         </Typography>
-                        <form style={styles.root} noValidate autoComplete="off">
-                            <FormControl style={styles.inputs}>
-                                <InputLabel htmlFor="option-one">Enter option one</InputLabel>
-                                <Input id="option-one" value={optionOne} onChange={this.handleChange} />
+                        <form className='Main' noValidate autoComplete="off">
+                            <FormControl>
+                                <InputLabel htmlFor="option-one">Option one</InputLabel>
+                                <Input id="option-one" value={valueOptionOne} onChange={this.processInputChange} />
                             </FormControl>
-                            <Typography style={styles.title} color="textSecondary" gutterBottom>
+                            <Typography className='TitleTypo' gutterBottom>
                                 OR
                             </Typography>
-                            <FormControl style={styles.inputs}>
-                                <InputLabel htmlFor="option-two">Enter option two</InputLabel>
-                                <Input id="option-two" value={optionTwo} onChange={this.handleChange} />
+                            <FormControl>
+                                <InputLabel htmlFor="option-two">Option two</InputLabel>
+                                <Input id="option-two" value={valueOptionTwo} onChange={this.processInputChange} />
                             </FormControl>
-                            <Button style={styles.submitBtn} variant="contained" color="primary" onClick={this.handleSubmit}>Submit</Button>
                         </form>
+                        <div className='BtnSubmit'>
+                            <Button variant="contained" onClick={this.processSubmit}>Submit</Button>
+                        </div>
                     </CardContent>
                 </Card>
             </Container>

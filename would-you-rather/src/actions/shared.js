@@ -1,5 +1,5 @@
 import {showLoading, hideLoading} from 'react-redux-loading'
-import {getInitialData, getUsers} from '../utils/api'
+import {getInitDataUserAndQuestion} from '../helper/api'
 import {receiveUsers} from '../actions/users'
 import {receiveQuestions} from '../actions/questions'
 
@@ -7,7 +7,7 @@ export function handleInitialData(){
     return async (dispatch) => {
         dispatch(showLoading())
         try {
-            const { users, questions } = await getInitialData()
+            const { users, questions } = await getInitDataUserAndQuestion()
             dispatch(receiveUsers(users))
             dispatch(receiveQuestions(questions))
 
@@ -15,14 +15,5 @@ export function handleInitialData(){
         } catch {
             console.log("An error occured getting the initial data")
         }
-    }
-}
-
-export function handleGetUsers(){
-    return async (dispatch) => {
-        dispatch(showLoading())
-        const { users } = await getUsers()
-        dispatch(receiveUsers(users))
-        dispatch(hideLoading())
     }
 }

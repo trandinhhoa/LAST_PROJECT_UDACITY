@@ -1,9 +1,38 @@
 import {showLoading, hideLoading} from 'react-redux-loading'
-import {saveQuestion, saveQuestionAnswer} from '../utils/api'
+import {saveQuestionApi, saveQuestionAnswerApi} from '../helper/api'
 
 export const RECEIVE_QUESTIONS = 'RECEIVE_QUESTIONS'
 export const ADD_QUESTION = 'ADD_QUESTION' 
 export const SAVE_QUESTION = 'SAVE_QUESTION'
+
+export function questions(state = {}, action){
+    switch(action.type){
+        case RECEIVE_QUESTIONS:
+            return{
+                ...state,
+                ...action.questions
+            }
+        case ADD_QUESTION:
+            return{
+                ...state,
+                [action.question.id]: action.question,
+                
+            }
+        case SAVE_QUESTION:
+            return{
+                ...state,
+                [action.qid]: {
+                    ...state[action.qid],
+                    [action.answer]:{
+                        ...state[action.qid][action.answer],
+                        votes: state[action.qid][action.answer].votes.concat([action.authedUser])
+                    }
+                }
+            }
+        default:
+            return state
+    }
+}
 
 export function receiveQuestions(questions){
     return{
@@ -19,13 +48,13 @@ function addQuestion(question){
     }
 }
 
-export function handleAddQuestion(optionOneText, optionTwoText){
+export function processAddQuestion(optionOneText, optionTwoText){
     return async (dispatch, getState) => {
         const {authedUser} = getState()
 
         dispatch(showLoading())
 
-        const question = await saveQuestion({
+        const question = await saveQuestionApi({
             author: authedUser,
             optionOneText,
             optionTwoText,
@@ -44,12 +73,12 @@ function questionAnswer(authedUser, qid, answer){
     }
 }
 
-export function handleSaveQuestionAnswer(answer, qid){
+export function saveQuestionAnswer(answer, qid){
     return async (dispatch, getState) => {
         const {authedUser} = getState()
         dispatch(showLoading())
 
-        await saveQuestionAnswer({
+        await saveQuestionAnswerApi({
             authedUser,
             qid,
             answer
